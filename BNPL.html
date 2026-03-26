@@ -1,214 +1,204 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.4">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Калькулятор выгоды BNPL — Robokassa</title>
+    
+    <link rel="icon" type="image/png" href="v-rk-32.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --rk-blue:        #525FFB;
+            --rk-blue-hover:  #3D49F0;
+            --rk-blue-light:  #EEEEFF;
+            --rk-dark:        #000000;
+            --rk-text:        #1A1A1A;
+            --rk-text-muted:  #6B7394;
+            --rk-success:     #0D9F6E;
+            --rk-success-bg:  #EDFAF5;
+            --rk-bg:          #F2F5FA;
+            --rk-white:       #FFFFFF;
+            --rk-border:      #E2E7F1;
+            --rk-radius-lg:   20px;
+            --rk-font:        'Geologica', sans-serif;
+            --rk-shadow-sm:   0 2px 8px rgba(15, 21, 53, 0.06);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--rk-font);
+            background: var(--rk-bg);
+            color: var(--rk-text);
+            min-height: 100vh;
+            padding: 40px 20px 60px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .rk-header { max-width: 860px; margin: 0 auto 24px; display: flex; justify-content: flex-start; }
+        .rk-logo-img { height: 16px; width: auto; } 
+
+        .container { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; }
+
+        .calc-title { text-align: center; margin-bottom: 32px; }
+        .calc-title h1 { font-size: 28px; font-weight: 700; color: var(--rk-dark); margin-bottom: 8px; }
+        .calc-title p { font-size: 15px; color: var(--rk-text-muted); }
+
+        .section { background: var(--rk-white); border: 1px solid var(--rk-border); border-radius: var(--rk-radius-lg); padding: 28px 32px; margin-bottom: 16px; box-shadow: var(--rk-shadow-sm); }
+        h3 { font-size: 14px; font-weight: 600; text-transform: uppercase; color: var(--rk-text-muted); margin-bottom: 20px; }
+
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .input-group { margin-bottom: 14px; }
+        label { display: block; font-size: 12px; font-weight: 500; color: var(--rk-text-muted); margin-bottom: 6px; }
+        input { width: 100%; padding: 11px; border: 1.5px solid var(--rk-border); border-radius: 8px; background: var(--rk-bg); font-family: var(--rk-font); font-size: 15px; font-weight: 500; }
+
+        .btn-calc-wrapper { display: flex; justify-content: center; margin: 24px 0 32px; }
+        .btn-calc { width: 100%; max-width: 320px; background-color: var(--rk-blue); color: #fff; border: none; padding: 16px; font-size: 16px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .btn-calc:hover { transform: translateY(-2px); background: var(--rk-blue-hover); }
+
+        .results-section { background: var(--rk-white); border: 1px solid var(--rk-border); border-radius: var(--rk-radius-lg); padding: 28px 32px; box-shadow: var(--rk-shadow-sm); }
+        .results-table { width: 100%; border-collapse: collapse; }
+        .results-table thead th { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--rk-text-muted); padding-bottom: 12px; text-align: center; border-bottom: 2px solid var(--rk-border); }
+        .results-table thead th:first-child { text-align: left; }
+        .results-table td { padding: 13px; font-size: 14.5px; text-align: center; border-bottom: 1px solid var(--rk-border); }
+        .results-table td:first-child { text-align: left; color: var(--rk-text-muted); }
+        .highlight { background: var(--rk-blue-light); color: var(--rk-blue); font-weight: 700; }
+
+        .profit-diff { margin-top: 20px; padding: 20px; border-radius: 12px; background: var(--rk-success-bg); color: var(--rk-success); border: 1.5px solid #B2ECDA; text-align: center; }
+        .profit-main { font-size: 22px; font-weight: 700; }
+
+        .export-actions { display: flex; justify-content: center; margin-top: 24px; }
+        .btn-export { width: 100%; max-width: 320px; padding: 14px; border: 1.5px solid var(--rk-blue); background: transparent; color: var(--rk-blue); font-weight: 600; border-radius: 8px; cursor: pointer; }
+
+        .print-only-footer { display: none; }
+
+        @media print {
+            @page { size: A4 portrait; margin: 10mm; }
+            body { background: white !important; padding: 0 !important; }
+            .no-print, .btn-calc-wrapper, .export-actions { display: none !important; }
+            .container { background: white !important; min-height: 275mm; display: flex !important; flex-direction: column !important; max-width: 100% !important; margin: 0 auto !important; }
+            .section, .results-section { box-shadow: none !important; border: 1px solid #E2E7F1 !important; margin-bottom: 15px !important; }
+            .print-only-footer { display: flex !important; justify-content: space-between !important; font-size: 10px !important; color: var(--rk-text-muted) !important; margin-top: auto !important; padding-top: 15px !important; border-top: 1px solid var(--rk-border) !important; line-height: 1.4 !important; }
+            .footer-col { flex: 1 !important; }
+            .footer-col.center { text-align: center !important; }
+            .footer-col.right { text-align: right !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="ru"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Калькулятор выгоды BNPL — Robokassa&lt;/title&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="icon" type="image/png" href="v-rk-32.png"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link href="https://fonts.googleapis.com/css2?family=Geologica:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>:root {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--rk-blue:<span class="Apple-converted-space">        </span>#525FFB;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--rk-blue-hover:<span class="Apple-converted-space">  </span>#3D49F0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--rk-blue-light:<span class="Apple-converted-space">  </span>#EEEEFF;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--rk-dark:<span class="Apple-converted-space">        </span>#000000;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--rk-text:<span class="Apple-converted-space">        </span>#1A1A1A;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--rk-text-muted:<span class="Apple-converted-space">  </span>#6B7394;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--rk-success: <span class="Apple-converted-space">    </span>#0D9F6E;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--rk-success-bg:<span class="Apple-converted-space">  </span>#EDFAF5;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--rk-bg:<span class="Apple-converted-space">          </span>#F2F5FA;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--rk-white: <span class="Apple-converted-space">      </span>#FFFFFF;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--rk-border:<span class="Apple-converted-space">      </span>#E2E7F1;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--rk-radius:<span class="Apple-converted-space">      </span>20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--rk-font:<span class="Apple-converted-space">        </span>'Geologica', sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-family: var(--rk-font);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: var(--rk-bg);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: var(--rk-text);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 40px 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>-webkit-font-smoothing: antialiased;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.container { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.rk-header { display: flex; justify-content: flex-start; margin-bottom: 24px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.rk-logo-img { height: 16px; width: auto; }<span class="Apple-converted-space"> </span></p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.calc-title { text-align: center; margin-bottom: 32px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.calc-title h1 { font-size: 28px; font-weight: 700; color: var(--rk-dark); margin-bottom: 8px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.calc-title p { font-size: 15px; color: var(--rk-text-muted); }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.section { background: var(--rk-white); border: 1px solid var(--rk-border); border-radius: var(--rk-radius); padding: 28px; margin-bottom: 16px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>h3 { font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--rk-text-muted); margin-bottom: 20px; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.input-group { margin-bottom: 14px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>label { display: block; font-size: 11px; font-weight: 500; color: var(--rk-text-muted); margin-bottom: 6px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>input { width: 100%; padding: 11px; border: 1.5px solid var(--rk-border); border-radius: 8px; background: var(--rk-bg); font-family: var(--rk-font); font-size: 15px; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.btn-calc-wrapper { display: flex; justify-content: center; margin: 24px 0; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.btn-calc { width: 100%; max-width: 320px; background-color: var(--rk-blue); color: #fff; border: none; padding: 16px; font-size: 16px; font-weight: 600; border-radius: 8px; cursor: pointer; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.results-section { background: var(--rk-white); border: 1px solid var(--rk-border); border-radius: var(--rk-radius); padding: 28px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.results-table { width: 100%; border-collapse: collapse; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.results-table th { font-size: 11px; color: var(--rk-text-muted); padding-bottom: 12px; border-bottom: 2px solid var(--rk-border); text-align: center; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.results-table td { padding: 13px; font-size: 14px; text-align: center; border-bottom: 1px solid var(--rk-border); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.results-table td:first-child { text-align: left; color: var(--rk-text-muted); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.highlight { background: var(--rk-blue-light); color: var(--rk-blue); font-weight: 700; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.profit-diff { margin-top: 20px; padding: 20px; border-radius: 12px; background: var(--rk-success-bg); color: var(--rk-success); border: 1.5px solid #B2ECDA; text-align: center; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.profit-main { font-size: 22px; font-weight: 700; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.print-only-footer { display: none; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>@media print {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>@page { size: A4 portrait; margin: 10mm; }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>body { background: white !important; padding: 0 !important; }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>.no-print { display: none !important; }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>.container { height: 277mm; display: flex; flex-direction: column; }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>.section, .results-section { box-shadow: none !important; border: 1px solid #E2E7F1 !important; }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>.print-only-footer { display: flex !important; justify-content: space-between; margin-top: auto; padding-top: 15px; border-top: 1px solid var(--rk-border); font-size: 10px; color: var(--rk-text-muted); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;header class="rk-header"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;img src="logo_robokassa_black.png" alt="Robokassa" class="rk-logo-img"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/header&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="calc-title"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1&gt;Выгода от внедрения BNPL&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;p&gt;Узнайте, сколько прибыли принесет рассрочка вашему бизнесу&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="section"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3&gt;Вводные данные&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="grid-inputs"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="input-group"&gt;&lt;label&gt;Текущий оборот, ₽&lt;/label&gt;&lt;input type="number" id="turnover" value="2000000"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="input-group"&gt;&lt;label&gt;Средний чек, ₽&lt;/label&gt;&lt;input type="number" id="avgCheck" value="5000"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="input-group"&gt;&lt;label&gt;Комиссия эквайринга, %&lt;/label&gt;&lt;input type="number" id="rateAcq" value="3" step="0.1"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="input-group"&gt;&lt;label&gt;Комиссия BNPL, %&lt;/label&gt;&lt;input type="number" id="rateBnpl" value="7" step="0.1"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="input-group"&gt;&lt;label&gt;Доля брошенных корзин, %&lt;/label&gt;&lt;input type="number" id="abandoned" value="30"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="input-group"&gt;&lt;label&gt;Спасение корзин с BNPL, %&lt;/label&gt;&lt;input type="number" id="recovery" value="10"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="btn-calc-wrapper no-print"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="btn-calc" onclick="calculate()"&gt;Рассчитать выгоду&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="results-section"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3&gt;Результаты прогноза&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;table class="results-table"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;th&gt;Показатель&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;th&gt;Без BNPL&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;th style="color: var(--rk-blue);"&gt;С Robokassa BNPL&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;tbody&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;tr&gt;&lt;td&gt;Общий оборот, ₽&lt;/td&gt;&lt;td id="resTurnoverOld"&gt;0&lt;/td&gt;&lt;td id="resTurnoverNew"&gt;0&lt;/td&gt;&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;tr&gt;&lt;td&gt;Спасенные заказы, шт.&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;td id="resSavedOrders"&gt;0&lt;/td&gt;&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;tr&gt;&lt;td&gt;Затраты на комиссию, ₽&lt;/td&gt;&lt;td id="resFeeOld"&gt;0&lt;/td&gt;&lt;td id="resFeeNew"&gt;0&lt;/td&gt;&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;tr class="highlight"&gt;&lt;td&gt;Чистая прибыль, ₽&lt;/td&gt;&lt;td id="resProfitOld"&gt;0&lt;/td&gt;&lt;td id="resProfitNew"&gt;0&lt;/td&gt;&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/tbody&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/table&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="profit-diff"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="profit-main" id="profitMain"&gt;✦ Дополнительная прибыль: 0 ₽ в мес.&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div id="profitYear" style="font-size: 14px; margin-top: 5px;"&gt;или 0 ₽ в год&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="export-actions no-print"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="btn-calc" style="background:none; border:1.5px solid var(--rk-blue); color:var(--rk-blue)" onclick="window.print()"&gt;Сохранить в PDF&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;footer class="print-only-footer"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div&gt;&lt;strong&gt;ООО «РОБОКАССА»&lt;/strong&gt;&lt;br&gt;ИНН 5047063929&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="text-align:center"&gt;115054, г. Москва,&lt;br&gt;Стремянный переулок д. 26&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="text-align:right"&gt;8 (499) 110-57-25&lt;br&gt;robokassa.com&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/footer&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>function f(n) { return Math.round(n).toLocaleString('ru-RU'); }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function calculate() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Вводные</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const turn = parseFloat(document.getElementById('turnover').value) || 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const avg = parseFloat(document.getElementById('avgCheck').value) || 1;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const rAcq = (parseFloat(document.getElementById('rateAcq').value) || 0) / 100;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const rBnpl = (parseFloat(document.getElementById('rateBnpl').value) || 0) / 100;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const abandonedRate = (parseFloat(document.getElementById('abandoned').value) || 0) / 100;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const recoveryRate = (parseFloat(document.getElementById('recovery').value) || 0) / 100;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const migrationRate = 0.1; // Переток текущих оплат в BNPL (стандарт 10%)</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// 1. Ситуация БЕЗ BNPL</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const feeOld = turn * rAcq;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const profitOld = turn - feeOld;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// 2. Ситуация С BNPL</p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Считаем сколько корзин бросают</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const currentOrders = turn / avg;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const lostOrders = (currentOrders / (1 - abandonedRate)) * abandonedRate;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Сколько заказов спасаем</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const savedOrders = lostOrders * recoveryRate;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const additionalRev = savedOrders * avg;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Распределение нового оборота</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const migratedTurnover = turn * migrationRate; // Те, кто платил картой, ушли в BNPL</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const turnoverCard = turn - migratedTurnover;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const turnoverBnpl = migratedTurnover + additionalRev;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const turnoverNew = turnoverCard + turnoverBnpl;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Новая комиссия</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const feeNew = (turnoverCard * rAcq) + (turnoverBnpl * rBnpl);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const profitNew = turnoverNew - feeNew;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Вывод</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('resTurnoverOld').innerText = f(turn);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('resTurnoverNew').innerText = f(turnoverNew);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('resSavedOrders').innerText = f(savedOrders);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('resFeeOld').innerText = f(feeOld);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('resFeeNew').innerText = f(feeNew);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('resProfitOld').innerText = f(profitOld);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('resProfitNew').innerText = f(profitNew);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const diff = profitNew - profitOld;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('profitMain').innerText = '✦ Дополнительная прибыль: + ' + f(diff) + ' ₽ в мес.';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('profitYear').innerText = 'или + ' + f(diff * 12) + ' ₽ в год';</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>calculate();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+
+    <div class="container">
+        <header class="rk-header">
+            <img src="logo_robokassa_black.png" alt="Robokassa" class="rk-logo-img">
+        </header>
+
+        <div class="calc-title">
+            <h1>Калькулятор выгоды BNPL</h1>
+            <p>Узнайте, сколько прибыли принесет внедрение рассрочки</p>
+        </div>
+        
+        <div class="section">
+            <h3>Вводные данные (в месяц)</h3>
+            <div class="grid-inputs">
+                <div class="input-group"><label>Текущий оборот, ₽</label><input type="number" id="turnover" value="2000000"></div>
+                <div class="input-group"><label>Средний чек, ₽</label><input type="number" id="avgCheck" value="5000"></div>
+                <div class="input-group"><label>Комиссия эквайринга, %</label><input type="number" id="rateAcq" value="3.0" step="0.1"></div>
+                <div class="input-group"><label>Комиссия BNPL, %</label><input type="number" id="rateBnpl" value="7.0" step="0.1"></div>
+                <div class="input-group"><label>Доля брошенных корзин, %</label><input type="number" id="abandoned" value="30"></div>
+                <div class="input-group"><label>Прогноз спасения корзин, %</label><input type="number" id="recovery" value="10"></div>
+            </div>
+        </div>
+
+        <div class="btn-calc-wrapper no-print">
+            <button class="btn-calc" onclick="calculate()">Рассчитать выгоду</button>
+        </div>
+
+        <div class="results-section">
+            <h3>Результаты прогноза</h3>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Показатель</th>
+                        <th>Текущая ситуация</th>
+                        <th style="color: var(--rk-blue);">С Robokassa BNPL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Спасенные заказы, шт.</td><td>—</td><td id="resSavedOrders">0</td></tr>
+                    <tr><td>Новый общий оборот, ₽</td><td id="resTurnoverOld">0</td><td id="resTurnoverNew">0</td></tr>
+                    <tr><td>Затраты на комиссию, ₽</td><td id="resFeeOld">0</td><td id="resFeeNew">0</td></tr>
+                    <tr class="highlight"><td>Прибыль компании (в мес.), ₽</td><td id="resProfitOld">0</td><td id="resProfitNew">0</td></tr>
+                </tbody>
+            </table>
+            
+            <div class="profit-diff" id="profitDiff">
+                <div class="profit-main" id="profitMain">✦ Дополнительная прибыль: 0 ₽</div>
+                <div id="profitYear" style="font-size: 14px; margin-top: 5px; opacity: 0.9;">или 0 ₽ в год</div>
+            </div>
+            
+            <div class="export-actions no-print">
+                <button class="btn-export" onclick="window.print()">Сохранить в PDF</button>
+            </div>
+        </div>
+
+        <footer class="print-only-footer">
+            <div class="footer-col"><strong>ООО «РОБОКАССА»</strong><br>ИНН 5047063929 / КПП 771601001</div>
+            <div class="footer-col center">115054, г. Москва,<br>Стремянный переулок д. 26</div>
+            <div class="footer-col right">8 (499) 110-57-25<br>robokassa.com</div>
+        </footer>
+    </div>
+
+    <script>
+        function n(v) { return Math.round(v).toLocaleString('ru-RU'); }
+
+        function calculate() {
+            const turnover = parseFloat(document.getElementById('turnover').value) || 0;
+            const avgCheck = parseFloat(document.getElementById('avgCheck').value) || 1;
+            const rAcq = (parseFloat(document.getElementById('rateAcq').value) || 0) / 100;
+            const rBnpl = (parseFloat(document.getElementById('rateBnpl').value) || 0) / 100;
+            const abandonedRate = (parseFloat(document.getElementById('abandoned').value) || 0) / 100;
+            const recoveryRate = (parseFloat(document.getElementById('recovery').value) || 0) / 100;
+            const migrationRate = 0.1; // Переток текущих клиентов в BNPL (стандарт из Excel)
+
+            // БЕЗ BNPL
+            const feeOld = turnover * rAcq;
+            const profitOld = turnover - feeOld;
+
+            // С BNPL
+            const currentOrders = turnover / avgCheck;
+            const potentialOrders = currentOrders / (1 - abandonedRate);
+            const lostOrders = potentialOrders * abandonedRate;
+            const savedOrders = lostOrders * recoveryRate;
+            const additionalRev = savedOrders * avgCheck;
+
+            const migratedTurnover = turnover * migrationRate;
+            const turnoverCard = turnover - migratedTurnover;
+            const turnoverBnpl = migratedTurnover + additionalRev;
+            const turnoverNew = turnoverCard + turnoverBnpl;
+
+            const feeNew = (turnoverCard * rAcq) + (turnoverBnpl * rBnpl);
+            const profitNew = turnoverNew - feeNew;
+
+            // Вывод
+            document.getElementById('resTurnoverOld').innerText = n(turnover);
+            document.getElementById('resTurnoverNew').innerText = n(turnoverNew);
+            document.getElementById('resSavedOrders').innerText = n(savedOrders);
+            document.getElementById('resFeeOld').innerText = n(feeOld);
+            document.getElementById('resFeeNew').innerText = n(feeNew);
+            document.getElementById('resProfitOld').innerText = n(profitOld);
+            document.getElementById('resProfitNew').innerText = n(profitNew);
+
+            const diff = profitNew - profitOld;
+            document.getElementById('profitMain').innerText = '✦ Дополнительная прибыль: + ' + n(diff) + ' ₽ в мес.';
+            document.getElementById('profitYear').innerText = 'или + ' + n(diff * 12) + ' ₽ в год';
+        }
+        calculate();
+    </script>
 </body>
 </html>
