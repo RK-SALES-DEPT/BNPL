@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Калькулятор выгоды — Robokassa</title>
+  <title>BNPL | Выгода от BNPL</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="v-rk-32.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -66,10 +67,10 @@
       color: inherit;
     }
 
-    .rk-logo svg {
+    .rk-logo img {
       display: block;
       width: 118px;
-      height: 18px;
+      height: auto;
     }
 
     .calc-title {
@@ -211,6 +212,19 @@
       transform: translateY(-2px);
     }
 
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .btn-secondary:disabled {
+      background: transparent;
+      color: var(--rk-text-muted);
+      border-color: var(--rk-border);
+    }
+
     .table-wrapper {
       width: 100%;
       overflow-x: auto;
@@ -266,6 +280,52 @@
       color: var(--rk-blue);
     }
 
+    .results-section {
+      transition: opacity 0.2s ease, filter 0.2s ease;
+    }
+
+    .results-section.hidden {
+      display: none;
+    }
+
+    .results-section.stale {
+      opacity: 0.55;
+      filter: grayscale(0.08);
+    }
+
+    .results-section.fresh {
+      animation: resultPulse 0.45s ease;
+    }
+
+    @keyframes resultPulse {
+      0% { transform: translateY(6px); opacity: 0.75; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .status-note {
+      text-align: center;
+      color: var(--rk-text-muted);
+      font-size: 13px;
+      margin: -8px 0 20px;
+      min-height: 18px;
+    }
+
+    .status-note.is-dirty {
+      color: var(--rk-blue);
+      font-weight: 500;
+    }
+
+    .field-error {
+      display: none;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--rk-danger);
+    }
+
+    .input-group.has-error .field-error {
+      display: block;
+    }
+
     .delta-positive {
       color: var(--rk-success);
       font-weight: 600;
@@ -313,6 +373,18 @@
       display: none;
     }
 
+    .card-note {
+      margin-top: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--rk-border);
+      border-radius: var(--rk-radius-md);
+      background: #FBFCFE;
+      color: var(--rk-text-muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+
     @media (max-width: 640px) {
       body {
         padding: 20px 16px 28px;
@@ -322,9 +394,8 @@
         margin-bottom: 20px;
       }
 
-      .rk-logo svg {
+      .rk-logo img {
         width: 108px;
-        height: 17px;
       }
 
       .calc-title {
@@ -397,9 +468,8 @@
         margin-bottom: 12px !important;
       }
 
-      .rk-logo svg {
+      .rk-logo img {
         width: 112px !important;
-        height: 17px !important;
       }
 
       .calc-title {
@@ -503,12 +573,7 @@
   <div class="sheet">
     <header class="rk-header">
       <div class="rk-logo" aria-label="Robokassa">
-        <svg viewBox="0 0 290 46" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="18" cy="23" r="10" fill="#525FFB"></circle>
-          <circle cx="35" cy="12" r="6" fill="#AAB2FF"></circle>
-          <circle cx="37" cy="32" r="7" fill="#000000" opacity="0.88"></circle>
-          <text x="58" y="31" fill="#000000" font-family="Geologica, sans-serif" font-size="24" font-weight="700" letter-spacing="-0.02em">robokassa</text>
-        </svg>
+        <img src="logo_robokassa_black.png" alt="Robokassa">
       </div>
     </header>
 
@@ -523,14 +588,17 @@
         <div class="input-group">
           <label for="turnover">Оборот (примерно), ₽</label>
           <input type="number" id="turnover" value="2000000" inputmode="decimal">
+          <div class="field-error">Введите корректное число</div>
         </div>
         <div class="input-group">
           <label for="avgCheck">Средний чек, ₽</label>
           <input type="number" id="avgCheck" value="5000" inputmode="decimal">
+          <div class="field-error">Введите корректное число</div>
         </div>
         <div class="input-group">
           <label for="abandonedShare">Доля брошенных корзин, %</label>
           <input type="number" id="abandonedShare" value="30" inputmode="decimal">
+          <div class="field-error">Укажите значение от 0 до 99,99</div>
         </div>
       </div>
     </section>
@@ -541,14 +609,17 @@
         <div class="input-group">
           <label for="bnplFee">Комиссия BNPL, %</label>
           <input type="number" id="bnplFee" value="7" inputmode="decimal">
+          <div class="field-error">Укажите значение от 0 до 100</div>
         </div>
         <div class="input-group">
           <label for="recoveryShare">Прогноз спасения корзин с BNPL, %</label>
           <input type="number" id="recoveryShare" value="10" inputmode="decimal">
+          <div class="field-error">Укажите значение от 0 до 100</div>
         </div>
         <div class="input-group">
           <label for="shiftShare">Переток текущего оборота в BNPL, %</label>
           <input type="number" id="shiftShare" value="10" inputmode="decimal">
+          <div class="field-error">Укажите значение от 0 до 100</div>
         </div>
       </section>
 
@@ -557,16 +628,21 @@
         <div class="input-group">
           <label for="currentFee">Комиссия эквайринга, %</label>
           <input type="number" id="currentFee" value="3" inputmode="decimal">
+          <div class="field-error">Укажите значение от 0 до 100</div>
+        </div>
+        <div class="card-note">
+          Текущая комиссия используется как база для сравнения: сначала рассчитывается прибыль компании без BNPL, затем — прогноз с учетом подключения оплаты частями и дополнительной выручки.
         </div>
       </section>
     </div>
 
     <div class="btn-row no-print">
       <button class="btn btn-primary" type="button" id="calcBtn">Рассчитать выгоду</button>
-      <button class="btn btn-secondary" type="button" id="printBtn">Сохранить в PDF</button>
     </div>
 
-    <section class="results-section">
+    <div class="status-note no-print" id="statusNote"></div>
+
+    <section class="results-section hidden" id="resultsSection">
       <h3>Сравнение результатов</h3>
       <div class="table-wrapper">
         <table class="results-table">
@@ -626,10 +702,14 @@
       </div>
 
       <div class="profit-diff" id="benefitBanner">
-        <div class="profit-main" id="bannerAmount">+ 0 ₽</div>
-        <div class="profit-year" id="yearlyBenefit">в год: + 0 ₽</div>
+        <div class="profit-main" id="bannerAmount">Ваша выгода: + 0 ₽ в мес.</div>
+        <div class="profit-year" id="yearlyBenefit">или + 0 ₽ в год</div>
       </div>
     </section>
+
+    <div class="btn-row no-print">
+      <button class="btn btn-secondary" type="button" id="printBtn" disabled>Сохранить в PDF</button>
+    </div>
 
     <footer class="print-footer">
       <div>
@@ -657,8 +737,23 @@
       recoveryShare: document.getElementById('recoveryShare'),
       shiftShare: document.getElementById('shiftShare'),
       calcBtn: document.getElementById('calcBtn'),
-      printBtn: document.getElementById('printBtn')
+      printBtn: document.getElementById('printBtn'),
+      resultsSection: document.getElementById('resultsSection'),
+      statusNote: document.getElementById('statusNote')
     };
+
+    const inputs = [
+      ids.turnover,
+      ids.avgCheck,
+      ids.abandonedShare,
+      ids.currentFee,
+      ids.bnplFee,
+      ids.recoveryShare,
+      ids.shiftShare
+    ];
+
+    let hasCalculated = false;
+    let isDirty = false;
 
     function preventInvalidChars(event) {
       if (['e', 'E', '+', '-'].includes(event.key)) {
@@ -666,11 +761,44 @@
       }
     }
 
-    Object.values(ids).forEach((element) => {
-      if (element && element.tagName === 'INPUT') {
-        element.addEventListener('keydown', preventInvalidChars);
-        element.addEventListener('input', () => element.classList.remove('error'));
+    function setDirtyState(dirty) {
+      isDirty = dirty;
+      if (!hasCalculated) {
+        ids.statusNote.textContent = '';
+        ids.statusNote.classList.remove('is-dirty');
+        return;
       }
+      if (dirty) {
+        ids.statusNote.textContent = 'Данные изменены. Нажмите «Пересчитать», чтобы обновить результат.';
+        ids.statusNote.classList.add('is-dirty');
+        ids.calcBtn.textContent = 'Пересчитать';
+        ids.resultsSection.classList.add('stale');
+        ids.printBtn.disabled = true;
+      } else {
+        ids.statusNote.textContent = '';
+        ids.statusNote.classList.remove('is-dirty');
+        ids.calcBtn.textContent = 'Пересчитать';
+        ids.resultsSection.classList.remove('stale');
+        ids.printBtn.disabled = false;
+      }
+    }
+
+    function toggleFieldError(input, show) {
+      input.classList.toggle('error', show);
+      const group = input.closest('.input-group');
+      if (group) {
+        group.classList.toggle('has-error', show);
+      }
+    }
+
+    inputs.forEach((element) => {
+      element.addEventListener('keydown', preventInvalidChars);
+      element.addEventListener('input', () => {
+        toggleFieldError(element, false);
+        if (hasCalculated) {
+          setDirtyState(true);
+        }
+      });
     });
 
     function formatCurrency(value) {
@@ -710,7 +838,7 @@
       const { min = 0, max = Infinity, exclusiveMax = false } = options;
       const maxValid = exclusiveMax ? value < max : value <= max;
       const isValid = Number.isFinite(value) && value >= min && maxValid;
-      input.classList.toggle('error', !isValid);
+      toggleFieldError(input, !isValid);
       return isValid ? value : null;
     }
 
@@ -767,8 +895,6 @@
     }
 
     function updateView(model) {
-      if (!model) return;
-
       const benefitClass = model.benefit >= 0 ? 'delta-positive' : 'delta-negative';
       const feeDelta = model.newCommission - model.currentCommission;
       const feeDeltaClass = feeDelta <= 0 ? 'delta-positive' : 'delta-negative';
@@ -801,36 +927,42 @@
       setText('profitFuture', formatCurrency(model.newProfit));
       setText('profitDelta', formatSignedCurrency(model.benefit), benefitClass);
 
-      document.getElementById('bannerAmount').textContent = formatSignedCurrency(model.benefit);
-      document.getElementById('yearlyBenefit').textContent = `в год: ${formatSignedCurrency(model.benefitYear)}`;
+      document.getElementById('bannerAmount').textContent = `Ваша выгода: ${formatSignedCurrency(model.benefit)} в мес.`;
+      document.getElementById('yearlyBenefit').textContent = `или ${formatSignedCurrency(model.benefitYear)} в год`;
 
       const banner = document.getElementById('benefitBanner');
       banner.classList.toggle('is-negative', model.benefit < 0);
     }
 
+    function showResults() {
+      ids.resultsSection.classList.remove('hidden');
+      ids.resultsSection.classList.remove('stale');
+      ids.resultsSection.classList.remove('fresh');
+      void ids.resultsSection.offsetWidth;
+      ids.resultsSection.classList.add('fresh');
+    }
+
     function calculateAndRender() {
       const model = calculateModel();
-      if (!model) return;
+      if (!model) {
+        ids.statusNote.textContent = 'Проверьте заполнение полей.';
+        ids.statusNote.classList.add('is-dirty');
+        return;
+      }
+
       updateView(model);
+      hasCalculated = true;
+      showResults();
+      setDirtyState(false);
+      ids.calcBtn.textContent = 'Пересчитать';
+      ids.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     ids.calcBtn.addEventListener('click', calculateAndRender);
-    ids.printBtn.addEventListener('click', () => window.print());
-
-    [
-      ids.turnover,
-      ids.avgCheck,
-      ids.abandonedShare,
-      ids.currentFee,
-      ids.bnplFee,
-      ids.recoveryShare,
-      ids.shiftShare
-    ].forEach((input) => {
-      input.addEventListener('change', calculateAndRender);
-      input.addEventListener('blur', calculateAndRender);
+    ids.printBtn.addEventListener('click', () => {
+      if (!hasCalculated || isDirty) return;
+      window.print();
     });
-
-    calculateAndRender();
   </script>
 </body>
 </html>
